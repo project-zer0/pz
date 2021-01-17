@@ -1,0 +1,72 @@
+{
+    "name": "project-zer0/pz",
+    "type": "library",
+    "description": "A command line tool that allows you to manage your project resources, dependencies and infrastructure.",
+    "keywords": [
+        "project-zer0",
+        "pz"
+    ],
+    "homepage": "https://project-zer0.io",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Aurimas Niekis",
+            "email": "aurimas@niekis.lt",
+            "homepage": "https://aurimas.niekis.lt"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "ext-pcntl": "*",
+        "ext-json": "*",
+        "symfony/console": "^5.2",
+        "symfony/config": "^5.2",
+        "symfony/yaml": "^5.2",
+        "symfony/process": "^5.2",
+        "symfony/event-dispatcher": "^5.2",
+        "monolog/monolog": "^2.2",
+        "composer/composer": "^2.0",
+        "symfony/monolog-bridge": "^5.2",
+        "symfony/stopwatch": "^5.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9",
+        "friendsofphp/php-cs-fixer": "^2",
+        "infection/infection": "^0",
+        "vimeo/psalm": "^4"
+    },
+    "config": {
+        "platform": {
+            "php": "8.0"
+        },
+        "platform-check": true
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test-coverage": "XDEBUG_MODE=coverage phpunit --coverage-html build/html/",
+        "cs-check": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix --dry-run --diff --diff-format udiff",
+        "cs-fix": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix",
+        "test-ci": "XDEBUG_MODE=coverage phpunit --coverage-text --coverage-clover=coverage.clover",
+        "test-psalm": "psalm",
+        "test-infection": "infection --min-msi=48 --threads=4 --only-covered",
+        "ci-run": ["@cs-check", "@test-psalm"]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "ProjectZer0\\Pz\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ProjectZer0\\Pz\\Tests\\": "tests"
+        }
+    },
+    "bin": [
+        "bin/pz"
+    ]
+}

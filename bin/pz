@@ -1,0 +1,13 @@
+#!/usr/bin/env php
+<?php
+
+if (false === file_exists('/.dockerenv')) {
+    throw new Error('"pz" tool must be run inside its docker "project-zer0/pz" container!');
+}
+
+require_once __DIR__ . '/../../../autoload.php';
+
+use ProjectZer0\Pz\ProjectZer0Toolkit;
+
+$toolkit = new ProjectZer0Toolkit();
+$toolkit->run();
