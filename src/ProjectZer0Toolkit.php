@@ -161,4 +161,16 @@ class ProjectZer0Toolkit
     {
         return $this->modules;
     }
+
+    public function getCurrentDirectory(): string
+    {
+        $cwd = getenv('PZ_PWD');
+
+        // A fallback to current directory in docker
+        if (false === $cwd) {
+            return getcwd();
+        }
+
+        return $cwd;
+    }
 }

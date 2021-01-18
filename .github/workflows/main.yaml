@@ -1,4 +1,4 @@
-name: Continues Integration
+name: Continuous Integration
 on: [ push, pull_request ]
 jobs:
     main:
