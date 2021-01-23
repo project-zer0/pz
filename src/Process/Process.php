@@ -6,6 +6,7 @@ namespace ProjectZer0\Pz\Process;
 
 use ErrorException;
 use InvalidArgumentException;
+use LogicException;
 use Symfony\Component\Process\Process as SymfonyProcess;
 
 /**
@@ -36,11 +37,7 @@ class Process implements ProcessInterface
             throw new ErrorException('pcntl_exec failed to start process');
         }
 
-        $process = new SymfonyProcess(
-            [$this->executable, ...$this->arguments],
-            null,
-            $this->environmentVariables
-        );
+        $process = $this->getProcess();
 
         $process->run(function (string $type, string $buffer): void {
             if (SymfonyProcess::ERR === $type) {
@@ -51,5 +48,18 @@ class Process implements ProcessInterface
         });
 
         return (int) $process->getExitCode();
+    }
+
+    public function getProcess(): SymfonyProcess
+    {
+        if ($this->replaceCurrentProcess) {
+            throw new LogicException('getProcess cant be used with replaceCurrentProcess');
+        }
+
+        return new SymfonyProcess(
+            [$this->executable, ...$this->arguments],
+            null,
+            $this->environmentVariables
+        );
     }
 }

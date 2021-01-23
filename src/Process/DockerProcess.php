@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ProjectZer0\Pz\Process;
 
+use LogicException;
+
 /**
  * @author Aurimas Niekis <aurimas@niekis.lt>
  */
@@ -99,6 +101,17 @@ class DockerProcess implements ProcessInterface
 
     public function execute(): int
     {
+        $process = $this->getProcess();
+
+        return $process->execute();
+    }
+
+    public function getProcess(): Process
+    {
+        if ($this->exec) {
+            throw new LogicException('getProcess cant be used with replaceCurrentProcess');
+        }
+
         $args = [];
 
         $args[] = 'run';
@@ -127,11 +140,11 @@ class DockerProcess implements ProcessInterface
             }
         }
 
-        if (count($this->volumes) > 0) {
-            foreach ($this->volumes as $volume) {
-                $args[] = '-v';
-                $args[] = $volume;
-            }
+        $this->volumes[] = '$PZ_PWD/.pz/docker:/root/.docker';
+
+        foreach ($this->volumes as $volume) {
+            $args[] = '-v';
+            $args[] = $volume;
         }
 
         if (count($this->envVariables) > 0) {
@@ -155,8 +168,6 @@ class DockerProcess implements ProcessInterface
 
         $args = array_merge($args, $this->arguments);
 
-        $process = new Process(static::BINARY, $args, replaceCurrentProcess: $this->exec);
-
-        return $process->execute();
+        return new Process(static::BINARY, $args, replaceCurrentProcess: $this->exec);
     }
 }

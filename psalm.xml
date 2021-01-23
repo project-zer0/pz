@@ -29,7 +29,7 @@
 
         <PossiblyUndefinedMethod>
             <errorLevel type="suppress">
-                <!-- PSalm cant detect symfony/config methos -->
+                <!-- PSalm cant detect symfony/config methods -->
                 <file name="src/Config/Configuration.php"/>
             </errorLevel>
         </PossiblyUndefinedMethod>
