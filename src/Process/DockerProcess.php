@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace ProjectZer0\Pz\Process;
 
-use LogicException;
-
 /**
  * @author Aurimas Niekis <aurimas@niekis.lt>
  */
@@ -108,10 +106,6 @@ class DockerProcess implements ProcessInterface
 
     public function getProcess(): Process
     {
-        if ($this->exec) {
-            throw new LogicException('getProcess cant be used with replaceCurrentProcess');
-        }
-
         $args = [];
 
         $args[] = 'run';
