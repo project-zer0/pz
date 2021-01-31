@@ -27,27 +27,24 @@ class Process implements ProcessInterface
 
     public function execute(): int
     {
+        $args = $this->arguments;
+        array_unshift($args, $this->executable);
+        $args = implode(' ', $args);
+
         if ($this->replaceCurrentProcess) {
             if (null !== $this->environmentVariables) {
-                pcntl_exec($this->executable, $this->arguments, $this->environmentVariables);
+                pcntl_exec('/bin/sh', ['-c', $args], $this->environmentVariables);
             } else {
-                pcntl_exec($this->executable, $this->arguments);
+                pcntl_exec('/bin/sh', ['-c', $args]);
             }
 
             throw new ErrorException('pcntl_exec failed to start process');
         }
 
-        $process = $this->getProcess();
-
-        $process->run(function (string $type, string $buffer): void {
-            if (SymfonyProcess::ERR === $type) {
-                fwrite(STDERR, $buffer);
-            } else {
-                fwrite(STDOUT, $buffer);
-            }
-        });
-
-        return (int) $process->getExitCode();
+        return $this->getProcess()
+            ->setTimeout(null)
+            ->setTty(true)
+            ->run();
     }
 
     public function getProcess(): SymfonyProcess
@@ -56,8 +53,12 @@ class Process implements ProcessInterface
             throw new LogicException('getProcess cant be used with replaceCurrentProcess');
         }
 
+        $args = $this->arguments;
+        array_unshift($args, $this->executable);
+        $args = implode(' ', $args);
+
         return new SymfonyProcess(
-            [$this->executable, ...$this->arguments],
+            ['/bin/sh', '-c', $args],
             null,
             $this->environmentVariables
         );

@@ -134,7 +134,7 @@ class DockerProcess implements ProcessInterface
             }
         }
 
-        $this->volumes[] = '$PZ_PWD/.pz/docker:/root/.docker';
+        $this->volumes[] = '$PZ_PWD/.pz/.docker:/root/.docker';
 
         foreach ($this->volumes as $volume) {
             $args[] = '-v';
