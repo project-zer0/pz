@@ -29,24 +29,25 @@ class PzCommand extends Command
 
     public function getConfiguration(): array
     {
-        if (null === $this->toolkit) {
-            throw new LogicException('Invalid usage of PzCommand');
-        }
-
-        return $this->toolkit->getConfiguration();
+        return $this->getToolkit()->getConfiguration();
     }
 
     public function getLogger(): LoggerInterface
     {
-        if (null === $this->toolkit) {
-            throw new LogicException('Invalid usage of PzCommand');
-        }
-
-        return $this->toolkit->getLogger();
+        return $this->getToolkit()->getLogger();
     }
 
     public function setToolkit(ProjectZer0Toolkit $toolkit): void
     {
         $this->toolkit = $toolkit;
+    }
+
+    public function getToolkit(): ProjectZer0Toolkit
+    {
+        if (null === $this->toolkit) {
+            throw new LogicException('Invalid usage of PzCommand');
+        }
+
+        return $this->toolkit;
     }
 }

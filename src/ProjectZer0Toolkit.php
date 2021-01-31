@@ -13,7 +13,10 @@ use Monolog\Logger;
 use ProjectZer0\Pz\Config\Configuration;
 use ProjectZer0\Pz\Console\Application;
 use ProjectZer0\Pz\Module\PzModuleInterface;
+use ProjectZer0\Pz\RPC\RpcCommandInterface;
 use Psr\Log\LoggerInterface;
+use Spiral\Goridge\Relay;
+use Spiral\Goridge\RPC\RPC;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -34,8 +37,10 @@ class ProjectZer0Toolkit
     public const VERSION = '1.0.0';
 
     private EventDispatcherInterface $eventDispatcher;
-    private LoggerInterface          $logger;
-    private OutputInterface          $output;
+    private LoggerInterface $logger;
+    private OutputInterface $output;
+
+    private RPC $rpc;
 
     /** @var PzModuleInterface[] */
     private array $modules;
@@ -53,6 +58,8 @@ class ProjectZer0Toolkit
             new Stopwatch(),
             $this->logger
         );
+
+        $this->rpc = new RPC(Relay::create('tcp://host.docker.internal:45666'));
 
         $consoleHandler = new ConsoleHandler($this->output);
 
@@ -160,6 +167,13 @@ class ProjectZer0Toolkit
     public function getModules(): array
     {
         return $this->modules;
+    }
+
+    public function sendRPCCommand(RpcCommandInterface $command): mixed
+    {
+        $payload = json_encode($command->getPayload(), JSON_THROW_ON_ERROR);
+
+        return $this->rpc->call($command->getMethodName(), $payload);
     }
 
     public function getCurrentDirectory(): string
