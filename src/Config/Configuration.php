@@ -32,8 +32,12 @@ class Configuration implements ConfigurationInterface
             ->getRootNode()
             ->children();
 
-        $rootNode->scalarNode('launcher_docker_image')
-            ->defaultValue('projectzer0/pz-launcher')
+        $rootNode
+            ->scalarNode('launcher_docker_image')
+                ->defaultValue('projectzer0/pz-launcher')
+            ->end()
+            ->scalarNode('launcher_docker_entrypoint')
+                ->defaultValue('/project/vendor/project-zer0/pz/docker/docker-entrypoint.sh')
             ->end();
 
         foreach ($this->modules as $module) {

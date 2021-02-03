@@ -59,7 +59,12 @@ class ProjectZer0Toolkit
             $this->logger
         );
 
-        $this->rpc = new RPC(Relay::create('tcp://host.docker.internal:45666'));
+        $rpcPort = getenv('PZ_PORT');
+        if (false === $rpcPort) {
+            throw new \LogicException('Missing "PZ_PORT" env variable');
+        }
+
+        $this->rpc = new RPC(Relay::create('tcp://host.docker.internal:' . $rpcPort));
 
         $consoleHandler = new ConsoleHandler($this->output);
 

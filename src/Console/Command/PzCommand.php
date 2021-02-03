@@ -22,9 +22,11 @@ class PzCommand extends Command
         return $this->ignoreHelp;
     }
 
-    public function ignoreHelp(): void
+    public function ignoreHelp(): self
     {
         $this->ignoreHelp = true;
+
+        return $this;
     }
 
     public function getConfiguration(): array

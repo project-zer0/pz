@@ -10,6 +10,8 @@ use ProjectZer0\Pz\ProjectZer0Toolkit;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\HelpCommand;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -30,6 +32,29 @@ class Application extends BaseApplication
         $this->toolkit = $toolkit;
 
         parent::__construct('Project Zer0 Toolkit', ProjectZer0Toolkit::VERSION);
+    }
+
+    public function getLongVersion(): string
+    {
+        $launcherVersion = getenv('PZ_LAUNCHER_VERSION');
+        if (false === $launcherVersion) {
+            throw new \LogicException('Missing "PZ_LAUNCHER_VERSION" env variable');
+        }
+
+        return sprintf(
+            'Project Zer0 Toolkit: <info>%s</info> Launcher: <info>%s</info>',
+            $this->getVersion(),
+            $launcherVersion
+        );
+    }
+
+    protected function getDefaultInputDefinition(): InputDefinition
+    {
+        return new InputDefinition(
+            [
+                new InputArgument('command', InputArgument::REQUIRED, 'The command to execute'),
+            ]
+        );
     }
 
     /**
